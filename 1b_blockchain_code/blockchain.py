@@ -70,3 +70,30 @@ class Blockchain:
         return True
 
 # Mining blockchain
+
+# Creating a Web App
+app = Flask(__name__)
+
+# Creating a Blockchain (instance)
+blockchain = Blockchain()
+
+# Mining a new block
+@app.route('/mine_block', methods = ['GET'])
+def mine_block():
+    # Need proof from prior block
+    previous_block = blockchain.get_previous_block() # Get last block of chain
+    previous_proof = previous_block['proof'] # Now get proof
+    # Now we can call out proof of work function
+    proof = blockchain.proof_of_work(previous_proof) # This gives proof of future/ new block
+    # Now need other keys so we can effectively create a block using that function
+    # Need previous hash to call that function
+    previous_hash = blockchain.hash(previous_block)
+    block = blockchain.create_block(proof, previous_block)
+    # Now want to be able to display it in postman
+    response = {
+        'message': 'Congratulations, you just mined a block!',
+        'index': block['index'],
+        'timestamp': block['timestamp']
+        'proof': block['proof']
+        'previous_hash': block['previous_hash'] }
+    return jsonify(response), 200 # Returns response in JSON format plus a 200 HTTP status code
