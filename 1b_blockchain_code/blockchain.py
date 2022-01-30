@@ -88,13 +88,13 @@ def mine_block():
     # Now need other keys so we can effectively create a block using that function
     # Need previous hash to call that function
     previous_hash = blockchain.hash(previous_block)
-    block = blockchain.create_block(proof, previous_block)
+    block = blockchain.create_block(proof, previous_hash)
     # Now want to be able to display it in postman
     response = {
         'message': 'Congratulations, you just mined a block!',
         'index': block['index'],
-        'timestamp': block['timestamp']
-        'proof': block['proof']
+        'timestamp': block['timestamp'],
+        'proof': block['proof'],
         'previous_hash': block['previous_hash'] }
     return jsonify(response), 200 # Returns response in JSON format plus a 200 HTTP status code
 
@@ -104,5 +104,19 @@ def get_chain():
     # We first display our chain (the blockchain)
     response = {
         'chain': blockchain.chain,
-        'length' len(blockchain.chain) }
+        'length': len(blockchain.chain) }
     return jsonify(response), 200
+
+# Checking if the blockchain is valid
+@app.route('/is_valid', methods = ['GET'])
+def is_valid():
+    is_valid = blockchain.is_chain_valid(blockchain.chain)
+    if is_valid:
+        response = { 'message': 'The Blockchain is valid' }
+    else:
+        response = { 'message': 'Error. The Blockchain is not valid' }
+    return jsonify(response), 200
+
+# Running the app
+# Need 2 arguments to run: host and port
+app.run(host = '0.0.0.0', port = 5000)
