@@ -111,7 +111,7 @@ app = Flask(__name__)
 # Creating an address for node on Port 5000
 # This node provides the currency that is generated as part of the mining process
 node_address = str(uuid4()).replace('-', '')
-node_owner = 'Brian'
+node_owner = 'Nick'
 
 # Creating a Blockchain (instance)
 blockchain = Blockchain()
@@ -193,4 +193,4 @@ def replace_chain():
     return jsonify(response), 200
 
 # Running the app
-app.run(host = '0.0.0.0', port = 5000)
+app.run(host = '0.0.0.0', port = 5004)
