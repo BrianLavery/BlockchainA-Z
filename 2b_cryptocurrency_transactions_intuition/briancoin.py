@@ -1,10 +1,17 @@
-# Module 1 - Create a Blockchain
+# Module 2 - Create a Cryptocurrency
+
+# To be installed:
+# Flask==0.12.2
+# requests==2.18.4
 
 # Importing libraries
 import datetime
 import hashlib
 import json
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+import requests
+from uuid import uuid4
+from urllib.parse import urlparse
 
 # Creating blockchain
 class Blockchain:
