@@ -151,5 +151,45 @@ def is_valid():
         response = { 'message': 'Error. The Blockchain is not valid' }
     return jsonify(response), 200
 
+# Adding a new transaction to the Blockchain
+@app.route('/add_transaction', methods = ['POST'])
+def add_transaction():
+    json = request.get_json() # We get the json file that is posted in the request
+    transaction_keys = ['sender', 'receiver', 'amount'] # Check a TXN has all 3 keys
+    if not all(key in json for key in transaction_keys): # Check all keys in transacton_keys are in the json file
+        return 'Transaction keys are incomplete', 400 # We return a message and error status code
+    index = blockchain.add_transaction(json['sender'], json['receiver'], json['amount']) # We add transaction to transactions list and it returns index of the next block where these will be added to
+    response = { 'message': f'This transaction will be added to block #{index}' }
+    return jsonify(response), 201
+
+# PART 2: Decentralising our blockchain
+
+# Connecting new nodes
+@app.route('/connect_node', methods = ['POST'])
+def connect_node():
+    json = request.get_json() # We will post a json file with list of all nodes in network (both existing and new joiners)
+    nodes = json.get('nodes') # This is the list of addresses we pass in json file
+    if nodes is None:
+        return 'No node', 400
+    for node in nodes:
+        blockchain.add_node(node) # We add the nodes to the list of addresses
+    response = { 'message': 'All the nodes are now connected. The Briancoin Blockchain now contains the following nodes',
+                 'total_nodes': list(blockchain.nodes) }
+    return response, 201
+
+# Replacing the chain by the longest chain in the network if needed
+@app.route('/replace_chain', methods = ['GET'])
+def replace_chain():
+    is_chain_replaced = blockchain.replace_chain
+    if is_chain_replaced:
+        response = {
+        'message': 'The chain was replaced by longest in the network',
+        'new_chain': blockchain.chain }
+    else:
+        response = {
+        'message': 'The chain was not replaced. Current chain is the longest'
+        'chain': blockchain.chain }
+    return jsonify(response), 200
+
 # Running the app
 app.run(host = '0.0.0.0', port = 5000)
