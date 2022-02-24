@@ -81,7 +81,7 @@ class Blockchain:
         return previous_block['index'] + 1 # We return index of new block that will take these TXNs
 
     # Adds a node
-    def add_nodes(self, address):
+    def add_node(self, address):
         parsed_url = urlparse(address) # We parse address of the node
         self.nodes.add(parsed_url.netloc)
 
@@ -95,7 +95,7 @@ class Blockchain:
             if response.status_code == 200: # Check request worked
                 length = response.json()['length']
                 chain = response.json()['chain']
-                if length > max_length and self.is_chain_valid(chain) # Check if this chain is longest so far and it is a valid chain
+                if length > max_length and self.is_chain_valid(chain): # Check if this chain is longest so far and it is a valid chain
                     max_length = length # Update max_length variable
                     longest_chain = chain
         if longest_chain:
@@ -188,7 +188,7 @@ def replace_chain():
         'new_chain': blockchain.chain }
     else:
         response = {
-        'message': 'The chain was not replaced. Current chain is the longest'
+        'message': 'The chain was not replaced. Current chain is the longest',
         'chain': blockchain.chain }
     return jsonify(response), 200
 
