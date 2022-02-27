@@ -88,24 +88,16 @@ class Blockchain:
     # Function to check for longest chain in network and replace existing chain if find a longer chanin in network (each node runs this)
     def replace_chain(self):
         network = self.nodes # Network is entire set of nodes globally
-        # print('network:', network)
         longest_chain = None # We don't know what the longest chain in network is yet
         max_length = len(self.chain) # Initialise as length of blockchain in current chain
-        print('max_length:', max_length)
         for node in network:
             response = requests.get(f'http://{node}/get_chain') # We use the imported requests library
-            print('address:', f'http://{node}/get_chain')
-            print('response:', response)
             if response.status_code == 200: # Check request worked
                 length = response.json()['length']
-                print('in if length:', length)
                 chain = response.json()['chain']
-                print('in if chain:', chain)
                 if length > max_length and self.is_chain_valid(chain): # Check if this chain is longest so far and it is a valid chain
                     max_length = length # Update max_length variable
-                    print('updated_max_length:', max_length)
                     longest_chain = chain
-                    print('updated_chain:', longest_chain)
         if longest_chain:
             self.chain = longest_chain
             return True
